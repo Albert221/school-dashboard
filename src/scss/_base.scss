@@ -1,0 +1,17 @@
+*, :before, :after {
+    box-sizing: inherit;
+}
+
+html {
+    box-sizing: border-box;
+}
+
+body {
+    color: #333;
+    background: url('https://static.pexels.com/photos/167672/pexels-photo-167672.jpeg') center/cover;
+    font: 18px 'Roboto Condensed', sans-serif;
+}
+
+.twitch-embed iframe {
+    height: calc(24vh + 1px);
+}

@@ -1,0 +1,7 @@
+.idea
+dist/*
+!dist/.gitkeep
+
+node_modules
+package-lock.json
+rev-manifest*.json

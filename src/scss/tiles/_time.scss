@@ -1,0 +1,44 @@
+.time {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    text-align: center;
+
+
+    &--current {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        font-size: 6vw;
+        font-weight: 300;
+    }
+
+    &--schedule {
+        display: flex;
+        flex-direction: row;
+        margin: 0;
+        padding: 0;
+        background: $primaryTransColor;
+
+        list-style: none;
+    }
+
+    &--schedule li {
+        padding: 1vw;
+    }
+
+    &--schedule-previous {
+        //
+    }
+
+    &--schedule-current {
+        flex: 1;
+    }
+
+    &--schedule-next {
+        //
+    }
+}
