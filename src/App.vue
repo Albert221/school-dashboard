@@ -8,8 +8,8 @@
     <TimetableTile />
     <TimetableTile />
     <TimetableTile />
-    <article class="tile"></article>
-    <article class="tile"></article>
+    <EmptyTile />
+    <EmptyTile />
     <TwitchTile channel="esl_csgo" />
   </div>
 </template>
@@ -20,6 +20,7 @@
   import LuckyNumbersTile from './tiles/LuckyNumbersTile.vue'
   import FeedTile from './tiles/FeedTile.vue'
   import TimetableTile from './tiles/TimetableTile.vue'
+  import EmptyTile from './tiles/EmptyTile.vue'
   import TwitchTile from './tiles/TwitchTile.vue'
 
   export default {
@@ -30,6 +31,7 @@
       LuckyNumbersTile,
       FeedTile,
       TimetableTile,
+      EmptyTile,
       TwitchTile
     }
   }
