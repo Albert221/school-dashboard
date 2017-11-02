@@ -44,7 +44,12 @@
 </template>
 
 <script>
+    import timeago from 'timeago.js'
+
     export default {
+        mounted() {
+            timeago().render(document.querySelectorAll('.timetable--time time'), 'pl')
+        }
     }
 </script>
 
