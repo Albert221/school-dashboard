@@ -1,6 +1,6 @@
 <template>
     <article class="tile time">
-        <h2 class="time--current">16:42</h2>
+        <h2 class="time--current">{{ currentTime }}</h2>
         <ul class="time--schedule">
             <li class="time--schedule-previous">16:40</li>
             <li class="time--schedule-current">Przerwa</li>
@@ -11,6 +11,24 @@
 
 <script>
     export default {
+        data() {
+            return {
+                currentTime: '00:00'
+            }
+        },
+
+        mounted() {
+            this.updateTime()
+        },
+
+        methods: {
+            updateTime() {
+                setInterval(() => {
+                    const date = new Date()
+                    this.currentTime = `${date.getHours()}:${date.getMinutes()}`
+                }, 1000)
+            }
+        }
     }
 </script>
 
