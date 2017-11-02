@@ -1,6 +1,6 @@
 <template>
   <div class="tile-container">
-    <TimeTile />
+    <TimeTile :date="date" ref="time" />
     <WeatherTile />
     <LuckyNumbersTile />
     <FeedTile />
@@ -33,6 +33,19 @@
       TimetableTile,
       EmptyTile,
       TwitchTile
+    },
+
+    data() {
+      return {
+        date: new Date()
+      }
+    },
+
+    mounted() {
+      setInterval(() => {
+        this.date = new Date()
+        this.$refs.time.updateTime()
+      }, 1000)
     }
   }
 </script>

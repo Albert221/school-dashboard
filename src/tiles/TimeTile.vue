@@ -13,6 +13,13 @@
     import { formatDate, formatPeriod } from '../utils'
 
     export default {
+        props: {
+            date: {
+                type: Date,
+                required: true
+            }
+        },
+
         data() {
             return {
                 currentTime: '00:00',
@@ -20,10 +27,6 @@
                 currentPeriod: 'Przerwa',
                 nextTime: '00:00'
             }
-        },
-
-        mounted() {
-            this.updateTime()
         },
 
         methods: {
@@ -42,43 +45,39 @@
                     [16*60+25, 17*60+10]
                 ]
 
-                setInterval(() => {
-                    const date = new Date()
+                // Set current time
+                this.currentTime = formatDate(this.date)
 
-                    // Set current time
-                    this.currentTime = formatDate(date)
+                // Set previous and next hours
+                const now = this.date.getHours() * 60 + this.date.getMinutes()
+                let foundPeriod = lessons.some(([from, to], i) => {
+                    if (now < from && i == 0) {
+                        this.previousTime = ''
+                        this.currentPeriod = 'Przed lekcjami'
+                        this.nextTime = formatPeriod(from)
+                        return true
+                    } else if (from <= now && now < to) {
+                        this.previousTime = formatPeriod(from)
+                        this.currentPeriod = `Lekcja ${i + 1}.`
+                        this.nextTime = formatPeriod(to)
+                        return true
+                    } else if (to < now && i == lessons.length - 1) {
+                        this.previousTime = formatPeriod(to)
+                        this.currentPeriod = 'Po lekcjach'
+                        this.nextTime = ''
+                        return true
+                    }
+                })
 
-                    // Set previous and next hours
-                    const now = date.getHours() * 60 + date.getMinutes()
-                    let foundPeriod = lessons.some(([from, to], i) => {
-                        if (now < from && i == 0) {
-                            this.previousTime = ''
-                            this.currentPeriod = 'Przed lekcjami'
-                            this.nextTime = formatPeriod(from)
-                            return true
-                        } else if (from <= now && now < to) {
-                            this.previousTime = formatPeriod(from)
-                            this.currentPeriod = `Lekcja ${i + 1}.`
-                            this.nextTime = formatPeriod(to)
-                            return true
-                        } else if (to < now && i == lessons.length - 1) {
+                if (!foundPeriod) {
+                    lessons.forEach(([from, to], i) => {
+                        if (to < now) {
                             this.previousTime = formatPeriod(to)
-                            this.currentPeriod = 'Po lekcjach'
-                            this.nextTime = ''
-                            return true
+                            this.currentPeriod = 'Przerwa'
+                            this.nextTime = formatPeriod(lessons[i + 1][0])
                         }
                     })
-
-                    if (!foundPeriod) {
-                        lessons.forEach(([from, to], i) => {
-                            if (to < now) {
-                                this.previousTime = formatPeriod(to)
-                                this.currentPeriod = 'Przerwa'
-                                this.nextTime = formatPeriod(lessons[i + 1][0])
-                            }
-                        })
-                    }
-                }, 1000)
+                }
             }
         }
     }
