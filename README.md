@@ -1,21 +1,10 @@
-# Szkolny panel
+# School dashboard
 
-## Roadmap
+## Installation
 
-- [ ] Przepisać frontend na Vue
-
-## Instalacja
-
-Potrzebujesz Node.js oraz Gulpa (`npm install -g gulp-cli`)
+All you need is Node.js.
 
     git clone git@github.com:Albert221/school-dashboard.git
-
     cd school-dashboard
-
-    npm install && gulp
-
-Jeżeli chcesz utworzyć deweloperski serwer ze zmianami na gorąco, użyj:
-
-    gulp bs
-
-Do działania potrzebny jest BrowserSync (`npm install -g browser-sync`).
+    npm install
+    npm run dev
