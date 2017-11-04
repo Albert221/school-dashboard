@@ -13,13 +13,6 @@
     import { formatDate, formatPeriod } from '../utils'
 
     export default {
-        props: {
-            date: {
-                type: Date,
-                required: true
-            }
-        },
-
         data() {
             return {
                 currentTime: '00:00',
@@ -27,6 +20,12 @@
                 currentPeriod: 'Przerwa',
                 nextTime: '00:00'
             }
+        },
+
+        mounted() {
+            setInterval(() => {
+                this.updateTime()
+            }, 1000)
         },
 
         methods: {
@@ -44,12 +43,13 @@
                     [15*60+35, 16*60+20],
                     [16*60+25, 17*60+10]
                 ]
+                const date = new Date()
 
                 // Set current time
-                this.currentTime = formatDate(this.date)
+                this.currentTime = formatDate(date)
 
                 // Set previous and next hours
-                const now = this.date.getHours() * 60 + this.date.getMinutes()
+                const now = date.getHours() * 60 + date.getMinutes()
                 let foundPeriod = lessons.some(([from, to], i) => {
                     if (now < from && i == 0) {
                         this.previousTime = ''
