@@ -7,17 +7,23 @@
                 </tr>
                 <tr>
                     <td class="timetable--lesson">Język polski</td>
-                    <td class="timetable--time">5 minut temu</td>
+                    <td class="timetable--time">
+                        <time datetime="2017-11-05T18:00:25+01:00"></time>
+                    </td>
                     <td class="timetable--room">5</td>
                 </tr>
                 <tr>
                     <td class="timetable--lesson">Język polski</td>
-                    <td class="timetable--time">za 45 minut</td>
+                    <td class="timetable--time">
+                        <time datetime="2017-11-05T18:40:25+01:00"></time>
+                    </td>
                     <td class="timetable--room">3</td>
                 </tr>
                 <tr>
                     <td class="timetable--lesson">Matematyka</td>
-                    <td class="timetable--time">za godzinę</td>
+                    <td class="timetable--time">
+                        <time datetime="2017-11-05T19:30:25+01:00"></time>
+                    </td>
                     <td class="timetable--room">1</td>
                 </tr>
                 <tr>
@@ -25,17 +31,23 @@
                 </tr>
                 <tr>
                     <td class="timetable--lesson">Język angielski</td>
-                    <td class="timetable--time">5 minut temu</td>
+                    <td class="timetable--time">
+                        <time datetime="2017-11-05T18:00:25+01:00"></time>
+                    </td>
                     <td class="timetable--room">6</td>
                 </tr>
                 <tr>
                     <td class="timetable--lesson">Matematyka</td>
-                    <td class="timetable--time">za 45 minut</td>
+                    <td class="timetable--time">
+                        <time datetime="2017-11-05T18:40:25+01:00"></time>
+                    </td>
                     <td class="timetable--room">1</td>
                 </tr>
                 <tr>
                     <td class="timetable--lesson">Biologia</td>
-                    <td class="timetable--time">za godzinę</td>
+                    <td class="timetable--time">
+                        <time datetime="2017-11-05T19:30:25+01:00"></time>
+                    </td>
                     <td class="timetable--room">2</td>
                 </tr>
             </tbody>
@@ -44,11 +56,25 @@
 </template>
 
 <script>
-    import timeago from 'timeago.js'
+    import moment from 'moment'
 
     export default {
         mounted() {
-            timeago().render(document.querySelectorAll('.timetable--time time'), 'pl')
+            this.updateTimes()
+            setInterval(() => {
+                this.updateTimes()
+            }, 1000)
+        },
+
+        methods: {
+            updateTimes() {
+                const times = document.querySelectorAll('.timetable--time time')
+
+                for (const time of times) {
+                    const timeValue = time.getAttribute('datetime')
+                    time.innerText = moment(timeValue).locale('pl').fromNow()
+                }
+            }
         }
     }
 </script>
