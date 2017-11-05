@@ -2,29 +2,19 @@
     <article class="tile weather">
         <div class="weather--current">
             <span class="weather--current-temperature">{{ current.temperature }}&deg;C</span>
+            <span class="weather--current-weather">{{ current.weather }}</span>
         </div>
         <ul class="weather--coming">
-            <li class="weather--coming-item">
-                <span class="weather--coming-time">Wieczorem</span>
-                <span class="weather--coming-temperature">{{ evening.temperature }}&deg;C</span>
-            </li>
-            <li class="weather--coming-item">
-                <span class="weather--coming-time">W nocy</span>
-                <span class="weather--coming-temperature">{{ night.temperature }}&deg;C</span>
-            </li>
-            <li class="weather--coming-item">
-                <span class="weather--coming-time">Jutro</span>
-                <span class="weather--coming-temperature">{{ tomorrow.temperature }}&deg;C</span>
-            </li>
-            <li class="weather--coming-item">
-                <span class="weather--coming-time">Pojutrze</span>
-                <span class="weather--coming-temperature">{{ twoDays.temperature }}&deg;C</span>
+            <li class="weather--coming-item" v-for="(forecast, i) in forecasts" :key="i">
+                <span class="weather--coming-time">{{ forecast.timeName }}</span>
+                <span class="weather--coming-temperature">{{ forecast.temperature }}&deg;C</span>
             </li>
         </ul>
     </article>
 </template>
 
 <script>
+    import moment from 'moment'
     import { sprintf } from 'sprintf-js'
     import { OWM_APPID } from '../constants'
 
@@ -43,20 +33,27 @@
         data() {
             return {
                 current: {
-                    temperature: 0
+                    temperature: 0,
+                    weather: ''
                 },
-                evening: {
-                    temperature: 0
-                },
-                night: {
-                    temperature: 0
-                },
-                tomorrow: {
-                    temperature: 0
-                },
-                twoDays: {
-                    temperature: 0
-                }
+                forecasts: [
+                    {
+                        temperature: 0,
+                        timeName: 'Wkrótce'
+                    },
+                    {
+                        temperature: 0,
+                        timeName: 'Wkrótce'
+                    },
+                    {
+                        temperature: 0,
+                        timeName: 'Wkrótce'
+                    },
+                    {
+                        temperature: 0,
+                        timeName: 'Wkrótce'
+                    },
+                ]
             }
         },
 
@@ -75,7 +72,23 @@
                 // Current weather
                 fetch(sprintf(url, 'weather')).then((response) => {
                     response.json().then((data) => {
-                        this.current.temperature = data.main.temp
+                        this.current = {
+                            temperature: data.main.temp,
+                            weather: data.weather[0].main
+                        }
+                    })
+                })
+
+                // Forecast weather
+                fetch(sprintf(url, 'forecast')).then((response) => {
+                    response.json().then((data) => {
+                        for ([i, forecast] of this.forecasts.entries()) {
+                            // 2.55^i because it will give: +6hrs, +12hrs, +1day and +2days
+                            const owmForecast = data.list[Math.pow(2.55, i).toFixed(0)]
+
+                            forecast.timeName = moment(owmForecast.dt, 'X').locale('pl').fromNow()
+                            forecast.temperature = owmForecast.main.temp.toFixed(0)
+                        }
                     })
                 })
             }
@@ -91,7 +104,7 @@
         flex-direction: row;
 
         &--current {
-            flex: 1;
+            flex: 0 50%;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -104,6 +117,7 @@
         }
 
         &--coming {
+            flex: 0 50%;
             display: flex;
             flex-direction: column;
             margin: 0;
