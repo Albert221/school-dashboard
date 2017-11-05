@@ -1,0 +1,1 @@
+export const OWM_APPID = process.env.OWM_APPID
