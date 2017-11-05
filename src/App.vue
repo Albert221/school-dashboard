@@ -1,7 +1,7 @@
 <template>
   <div class="tile-container">
     <TimeTile />
-    <WeatherTile />
+    <WeatherTile :lat="54.717824" :lng="18.411052" />
     <LuckyNumbersTile />
     <FeedTile />
     <TimetableTile />
