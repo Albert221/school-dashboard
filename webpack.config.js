@@ -1,5 +1,6 @@
 var path = require('path')
 var webpack = require('webpack')
+
 require('dotenv').config()
 
 module.exports = {
@@ -52,7 +53,14 @@ module.exports = {
   performance: {
     hints: false
   },
-  devtool: '#eval-source-map'
+  devtool: '#eval-source-map',
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        OWM_APPID: `"${process.env.OWM_APPID}"`
+      }
+    })
+  ]
 }
 
 if (process.env.NODE_ENV === 'production') {
