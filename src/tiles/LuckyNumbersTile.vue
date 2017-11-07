@@ -9,7 +9,7 @@
 </template>
 
 <script>
-    import { API_ADDRESS } from '../constants'
+    import { API_URL } from '../constants'
 
     export default {
         data() {
@@ -29,7 +29,7 @@
 
         methods: {
             updateNumbers() {
-                const url = `${API_ADDRESS}/lucky`;
+                const url = `${API_URL}/lucky`;
 
                 fetch(url).then((response) => {
                     response.json().then((data) => {
