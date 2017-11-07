@@ -2,14 +2,43 @@
   <article class="tile lucky-numbers">
         <h2 class="lucky-numbers--title">Szczęśliwe numerki</h2>
         <ul class="lucky-numbers--numbers">
-            <li class="lucky-numbers--number">15</li>
-            <li class="lucky-numbers--number">22</li>
+            <li class="lucky-numbers--number">{{ firstNumber }}</li>
+            <li class="lucky-numbers--number">{{ secondNumber }}</li>
         </ul>
     </article>
 </template>
 
 <script>
+    import { API_ADDRESS } from '../constants'
+
     export default {
+        data() {
+            return {
+                firstNumber: 0,
+                secondNumber: 0
+            }
+        },
+
+        mounted() {
+            this.updateNumbers();
+
+            setInterval(() => {
+                this.updateNumbers();
+            }, 1000 * 60 * 60); // Update the lucky numbers every hour
+        },
+
+        methods: {
+            updateNumbers() {
+                const url = `${API_ADDRESS}/lucky`;
+
+                fetch(url).then((response) => {
+                    response.json().then((data) => {
+                        this.firstNumber = data.numbers[0];
+                        this.secondNumber = data.numbers[1];
+                    })
+                })
+            }
+        }
     }
 </script>
 
