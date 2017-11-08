@@ -1,10 +1,13 @@
 <template>
     <article class="tile time">
-        <h2 class="time--current">{{ currentTime }}</h2>
+        <h2 class="time--current">{{ currentTime.format('H:mm') }}</h2>
         <ul class="time--schedule">
-            <li class="time--schedule-previous">{{ previousTime }}</li>
+            <li class="time--schedule-progress-item">
+                <progress class="time--progress" :value="progress" max="100"></progress>
+            </li>
+            <li class="time--schedule-previous">{{ previousTime.format('H:mm') }}</li>
             <li class="time--schedule-current">{{ currentPeriod }}</li>
-            <li class="time--schedule-next">{{ nextTime }}</li>
+            <li class="time--schedule-next">{{ nextTime.format('H:mm') }}</li>
         </ul>
     </article>
 </template>
@@ -17,6 +20,7 @@
         data() {
             return {
                 currentTime: '00:00',
+                progress: 0,
                 previousTime: '00:00',
                 currentPeriod: 'Przerwa',
                 nextTime: '00:00'
@@ -24,6 +28,8 @@
         },
 
         mounted() {
+            this.updateTime()
+
             setInterval(() => {
                 this.updateTime()
             }, 1000)
@@ -44,33 +50,37 @@
                     [15*60+35, 16*60+20],
                     [16*60+25, 17*60+10]
                 ].map(val => val.map(val => moment().hours(0).minutes(0).add(val, 'minutes')))
-                console.log(lessons)
 
-                const date = moment()
+                const now = moment()
 
                 // Set current time
-                this.currentTime = moment(date).format('H:mm')
+                this.currentTime = moment(now)
 
                 // Set previous and next hours
-                const now = date
                 let foundPeriod = lessons.some(([from, to], i) => {
                     if (now < from && i == 0) {
-                        this.previousTime = ''
+                        this.previousTime = lessons[lessons.length - 1][1]
                         this.currentPeriod = 'Przed lekcjami'
-                        this.nextTime = moment(from).format('H:mm')
+                        this.nextTime = from
+
+                        this.updateProgress(this.previousTime, this.nextTime, this.currentTime)
 
                         return true
                     } else if (from <= now && now < to) {
-                        this.previousTime = moment(from).format('H:mm')
+                        this.previousTime = from
                         this.currentPeriod = `Lekcja ${i + 1}.`
-                        this.nextTime = moment(to).format('H:mm')
+                        this.nextTime = to
+
+                        this.updateProgress(this.previousTime, this.nextTime, this.currentTime)
 
                         return true
                     } else if (to < now && i == lessons.length - 1) {
-                        this.previousTime = moment(to).format('H:mm')
+                        this.previousTime = to
                         this.currentPeriod = 'Po lekcjach'
-                        this.nextTime = ''
-                        
+                        this.nextTime = lessons[0][0]
+
+                        this.updateProgress(this.previousTime, this.nextTime, this.currentTime)
+
                         return true
                     }
                 })
@@ -78,12 +88,29 @@
                 if (!foundPeriod) {
                     lessons.forEach(([from, to], i) => {
                         if (to < now) {
-                            this.previousTime = moment(to).format('H:mm')
+                            this.previousTime = to
                             this.currentPeriod = 'Przerwa'
-                            this.nextTime = moment(lessons[i + 1][0]).format('H:mm')
+                            this.nextTime = lessons[i + 1][0]
+
+                            this.updateProgress(this.previousTime, this.nextTime, this.currentTime)
                         }
                     })
                 }
+            },
+
+            updateProgress(from, to, now) {
+                if (from > to) {
+                    to.add(1, 'day')
+                }
+
+                if (now < from) {
+                    now.add(1, 'day')
+                }
+
+                const max = to.diff(from)
+                const value = now.diff(from)
+
+                this.progress = (value / max * 100).toFixed(0)
             }
         }
     }
@@ -111,6 +138,7 @@
         }
 
         &--schedule {
+            position: relative;
             display: flex;
             flex-direction: row;
             margin: 0;
@@ -120,13 +148,32 @@
             list-style: none;
         }
 
-        &--schedule li {
-            padding: 1vw;
+        &--schedule-progress-item {
+            z-index: -1;
+        }
+
+        &--progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            -webkit-appearance: none;
+
+            &::-webkit-progress-bar {
+                background: $primaryTransColor;
+            }
+
+            &::-webkit-progress-value {
+                background: black;
+            }
         }
 
         &--schedule-previous,
+        &--schedule-current,
         &--schedule-next {
             flex: 1 0 0;
+            padding: 1vw;
         }
 
         &--schedule-current {
