@@ -18,11 +18,11 @@
     export default {
         data() {
             return {
-                currentTime: '00:00',
+                currentTime: moment(),
                 progress: 0,
-                previousTime: '00:00',
+                previousTime: moment(),
                 currentPeriod: 'Przerwa',
-                nextTime: '00:00'
+                nextTime: moment()
             }
         },
 
