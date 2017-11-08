@@ -2,12 +2,17 @@
     <article class="tile weather">
         <div class="weather--current">
             <span class="weather--current-temperature">{{ current.temperature }}&deg;C</span>
-            <span class="weather--current-weather">{{ current.weather }}</span>
+            <span>
+                <img :src="'http://openweathermap.org/img/w/' + current.weatherIcon + '.png'" alt=""  class="weather--current-weather">
+            </span>
         </div>
         <ul class="weather--coming">
             <li class="weather--coming-item" v-for="(forecast, i) in forecasts" :key="i">
                 <span class="weather--coming-time">{{ forecast.timeName }}</span>
                 <span class="weather--coming-temperature">{{ forecast.temperature }}&deg;C</span>
+                <span>
+                    <img :src="'http://openweathermap.org/img/w/' + forecast.weatherIcon + '.png'" alt="" class="weather--coming-weather">
+                </span>
             </li>
         </ul>
     </article>
@@ -34,24 +39,28 @@
             return {
                 current: {
                     temperature: 0,
-                    weather: ''
+                    weatherIcon: ''
                 },
                 forecasts: [
                     {
                         temperature: 0,
-                        timeName: 'Wkrótce'
+                        timeName: 'Wkrótce',
+                        weatherIcon: ''
                     },
                     {
                         temperature: 0,
-                        timeName: 'Wkrótce'
+                        timeName: 'Wkrótce',
+                        weatherIcon: ''
                     },
                     {
                         temperature: 0,
-                        timeName: 'Wkrótce'
+                        timeName: 'Wkrótce',
+                        weatherIcon: ''
                     },
                     {
                         temperature: 0,
-                        timeName: 'Wkrótce'
+                        timeName: 'Wkrótce',
+                        weatherIcon: ''
                     },
                 ]
             }
@@ -74,7 +83,7 @@
                     response.json().then((data) => {
                         this.current = {
                             temperature: data.main.temp,
-                            weather: data.weather[0].main
+                            weatherIcon: data.weather[0].icon
                         }
                     })
                 })
@@ -86,8 +95,9 @@
                             // 2.55^i because it will give: +6hrs, +12hrs, +1day and +2days
                             const owmForecast = data.list[Math.pow(2.55, i).toFixed(0)]
 
-                            forecast.timeName = moment(owmForecast.dt, 'X').locale('pl').fromNow()
+                            forecast.timeName = moment(owmForecast.dt, 'X').locale('pl').fromNow(true)
                             forecast.temperature = owmForecast.main.temp.toFixed(0)
+                            forecast.weatherIcon = owmForecast.weather[0].icon
                         }
                     })
                 })
@@ -116,12 +126,16 @@
             font-weight: 300;
         }
 
+        &--current-weather {
+            width: 90px;
+        }
+
         &--coming {
             flex: 0 50%;
             display: flex;
             flex-direction: column;
             margin: 0;
-            padding: 0 1vw;
+            padding: 0 .5vw 0 1vw;
             background: $primaryTransColor;
             list-style: none;
         }
@@ -135,10 +149,17 @@
 
         &--coming-time {
             margin-right: 1vw;
+            font-size: 85%;
         }
 
         &--coming-temperature {
             margin-left: auto;
+        }
+
+        &--coming-weather {
+            width: 40px;
+            margin-left: .5vw;
+            vertical-align: middle;
         }
     }
 </style>
