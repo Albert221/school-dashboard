@@ -9,6 +9,7 @@
 </template>
 
 <script>
+    import fetch from 'fetch-retry'
     import { API_URL } from '../constants'
 
     export default {
@@ -20,21 +21,24 @@
         },
 
         mounted() {
-            this.updateNumbers();
+            this.updateNumbers()
 
             setInterval(() => {
-                this.updateNumbers();
+                this.updateNumbers()
             }, 1000 * 60 * 60); // Update the lucky numbers every hour
         },
 
         methods: {
             updateNumbers() {
-                const url = `${API_URL}/lucky`;
+                const url = `${API_URL}/lucky`
 
-                fetch(url).then((response) => {
+                fetch(url, {
+                    retries: Number.MAX_SAFE_INTEGER,
+                    retryDelay: 1 * 60 * 1000
+                }).then((response) => {
                     response.json().then((data) => {
-                        this.firstNumber = data.numbers[0];
-                        this.secondNumber = data.numbers[1];
+                        this.firstNumber = data.numbers[0]
+                        this.secondNumber = data.numbers[1]
                     })
                 })
             }
