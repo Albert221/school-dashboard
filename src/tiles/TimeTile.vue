@@ -14,7 +14,6 @@
 
 <script>
     import moment from 'moment'
-    import { formatDate, formatPeriod } from '../utils'
 
     export default {
         data() {

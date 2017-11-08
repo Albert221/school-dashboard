@@ -22,6 +22,7 @@
     import moment from 'moment'
     import { sprintf } from 'sprintf-js'
     import { OWM_APPID } from '../constants'
+    import { encodeParams } from '../utils'
 
     export default {
         props: {
@@ -76,7 +77,7 @@
         
         methods: {
             updateWeather() {
-                const url = `http://api.openweathermap.org/data/2.5/%s?lat=${this.lat}&lon=${this.lng}&APPID=${OWM_APPID}&units=metric`
+                const url = encodeParams`http://api.openweathermap.org/data/2.5/%s?lat=${this.lat}&lon=${this.lng}&APPID=${OWM_APPID}&units=metric`
 
                 // Current weather
                 fetch(sprintf(url, 'weather')).then((response) => {
