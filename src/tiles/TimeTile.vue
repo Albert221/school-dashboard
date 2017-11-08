@@ -2,6 +2,9 @@
     <article class="tile time">
         <h2 class="time--current">{{ currentTime }}</h2>
         <ul class="time--schedule">
+            <li class="time--schedule-progress-item">
+                <progress class="time--progress" :value="progress" max="100"></progress>
+            </li>
             <li class="time--schedule-previous">{{ previousTime }}</li>
             <li class="time--schedule-current">{{ currentPeriod }}</li>
             <li class="time--schedule-next">{{ nextTime }}</li>
@@ -17,6 +20,7 @@
         data() {
             return {
                 currentTime: '00:00',
+                progress: 0,
                 previousTime: '00:00',
                 currentPeriod: 'Przerwa',
                 nextTime: '00:00'
@@ -24,6 +28,8 @@
         },
 
         mounted() {
+            this.updateTime()
+
             setInterval(() => {
                 this.updateTime()
             }, 1000)
@@ -57,16 +63,25 @@
                         this.previousTime = ''
                         this.currentPeriod = 'Przed lekcjami'
                         this.nextTime = moment(to).format('H:mm')
+
+                        this.updateProgress(0, 0, 0)
+
                         return true
                     } else if (from <= now && now < to) {
                         this.previousTime = moment(from).format('H:mm')
                         this.currentPeriod = `Lekcja ${i + 1}.`
                         this.nextTime = moment(to).format('H:mm')
+
+                        this.updateProgress(this.previousTime, this.nextTime, this.currentTime)
+
                         return true
                     } else if (to < now && i == lessons.length - 1) {
                         this.previousTime = moment(from).format('H:mm')
                         this.currentPeriod = 'Po lekcjach'
                         this.nextTime = ''
+
+                        this.updateProgress(0, 0, 0)
+
                         return true
                     }
                 })
@@ -77,9 +92,22 @@
                             this.previousTime = moment(to).format('H:mm')
                             this.currentPeriod = 'Przerwa'
                             this.nextTime = moment(lessons[i + 1][0]).format('H:mm')
+
+                            this.updateProgress(this.previousTime, this.nextTime, this.currentTime)
                         }
                     })
                 }
+            },
+
+            updateProgress(from, to, now) {
+                from = moment(from, 'H:mm')
+                to = moment(to, 'H:mm')
+                now = moment(now, 'H:mm')
+
+                const max = to.diff(from)
+                const value = now.diff(from)
+
+                this.progress = (value / max * 100).toFixed(0)
             }
         }
     }
@@ -107,6 +135,7 @@
         }
 
         &--schedule {
+            position: relative;
             display: flex;
             flex-direction: row;
             margin: 0;
@@ -116,13 +145,32 @@
             list-style: none;
         }
 
-        &--schedule li {
-            padding: 1vw;
+        &--schedule-progress-item {
+            z-index: -1;
+        }
+
+        &--progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            -webkit-appearance: none;
+
+            &::-webkit-progress-bar {
+                background: $primaryTransColor;
+            }
+
+            &::-webkit-progress-value {
+                background: black;
+            }
         }
 
         &--schedule-previous,
+        &--schedule-current,
         &--schedule-next {
             flex: 1 0 0;
+            padding: 1vw;
         }
 
         &--schedule-current {
