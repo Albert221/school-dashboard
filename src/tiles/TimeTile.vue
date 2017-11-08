@@ -43,7 +43,8 @@
                     [14*60+45, 15*60+30],
                     [15*60+35, 16*60+20],
                     [16*60+25, 17*60+10]
-                ].map(val => val.map(val => val * 60 * 1000))
+                ].map(val => val.map(val => moment().hours(0).minutes(0).add(val, 'minutes')))
+                console.log(lessons)
 
                 const date = moment()
 
@@ -51,22 +52,25 @@
                 this.currentTime = moment(date).format('H:mm')
 
                 // Set previous and next hours
-                const now = (date.hours() * 60 + date.minutes()) * 60 * 1000 - 60 * 60 * 1000
+                const now = date
                 let foundPeriod = lessons.some(([from, to], i) => {
                     if (now < from && i == 0) {
                         this.previousTime = ''
                         this.currentPeriod = 'Przed lekcjami'
-                        this.nextTime = moment(to).format('H:mm')
+                        this.nextTime = moment(from).format('H:mm')
+
                         return true
                     } else if (from <= now && now < to) {
                         this.previousTime = moment(from).format('H:mm')
                         this.currentPeriod = `Lekcja ${i + 1}.`
                         this.nextTime = moment(to).format('H:mm')
+
                         return true
                     } else if (to < now && i == lessons.length - 1) {
-                        this.previousTime = moment(from).format('H:mm')
+                        this.previousTime = moment(to).format('H:mm')
                         this.currentPeriod = 'Po lekcjach'
                         this.nextTime = ''
+                        
                         return true
                     }
                 })
