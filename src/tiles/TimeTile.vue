@@ -10,6 +10,7 @@
 </template>
 
 <script>
+    import moment from 'moment'
     import { formatDate, formatPeriod } from '../utils'
 
     export default {
@@ -42,27 +43,28 @@
                     [14*60+45, 15*60+30],
                     [15*60+35, 16*60+20],
                     [16*60+25, 17*60+10]
-                ]
-                const date = new Date()
+                ].map(val => val.map(val => val * 60 * 1000))
+
+                const date = moment()
 
                 // Set current time
-                this.currentTime = formatDate(date)
+                this.currentTime = moment(date).format('H:mm')
 
                 // Set previous and next hours
-                const now = date.getHours() * 60 + date.getMinutes()
+                const now = (date.hours() * 60 + date.minutes()) * 60 * 1000 - 60 * 60 * 1000
                 let foundPeriod = lessons.some(([from, to], i) => {
                     if (now < from && i == 0) {
                         this.previousTime = ''
                         this.currentPeriod = 'Przed lekcjami'
-                        this.nextTime = formatPeriod(from)
+                        this.nextTime = moment(to).format('H:mm')
                         return true
                     } else if (from <= now && now < to) {
-                        this.previousTime = formatPeriod(from)
+                        this.previousTime = moment(from).format('H:mm')
                         this.currentPeriod = `Lekcja ${i + 1}.`
-                        this.nextTime = formatPeriod(to)
+                        this.nextTime = moment(to).format('H:mm')
                         return true
                     } else if (to < now && i == lessons.length - 1) {
-                        this.previousTime = formatPeriod(to)
+                        this.previousTime = moment(from).format('H:mm')
                         this.currentPeriod = 'Po lekcjach'
                         this.nextTime = ''
                         return true
@@ -72,9 +74,9 @@
                 if (!foundPeriod) {
                     lessons.forEach(([from, to], i) => {
                         if (to < now) {
-                            this.previousTime = formatPeriod(to)
+                            this.previousTime = moment(to).format('H:mm')
                             this.currentPeriod = 'Przerwa'
-                            this.nextTime = formatPeriod(lessons[i + 1][0])
+                            this.nextTime = moment(lessons[i + 1][0]).format('H:mm')
                         }
                     })
                 }
