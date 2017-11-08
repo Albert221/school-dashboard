@@ -57,7 +57,7 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
-        OWM_APPID: `"${process.env.OWM_APPID}"`
+        OWM_APPID: JSON.stringify(process.env.OWM_APPID)
       }
     })
   ]
