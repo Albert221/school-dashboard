@@ -1,5 +1,6 @@
 <template>
   <div class="tile-container">
+    <BackgroundTile type="image" src="https://hdwallsource.com/img/2014/6/mountain-peaks-wallpaper-hd-33593-34349-hd-wallpapers.jpg" />
     <TimeTile />
     <WeatherTile :lat="54.717824" :lng="18.411052" />
     <LuckyNumbersTile />
@@ -10,7 +11,6 @@
     <TimetableTile />
     <EmptyTile />
     <EmptyTile />
-    <TwitchTile channel="esl_csgo" />
   </div>
 </template>
 
@@ -21,10 +21,11 @@
   import FeedTile from './tiles/FeedTile.vue'
   import TimetableTile from './tiles/TimetableTile.vue'
   import EmptyTile from './tiles/EmptyTile.vue'
-  import TwitchTile from './tiles/TwitchTile.vue'
+  import BackgroundTile from './tiles/BackgroundTile.vue'
 
   export default {
     name: 'app',
+
     components: {
       TimeTile,
       WeatherTile,
@@ -32,7 +33,7 @@
       FeedTile,
       TimetableTile,
       EmptyTile,
-      TwitchTile
+      BackgroundTile,
     }
   }
 </script>
