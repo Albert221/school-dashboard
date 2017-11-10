@@ -4,10 +4,10 @@
     <WeatherTile :lat="54.717824" :lng="18.411052" />
     <LuckyNumbersTile />
     <FeedTile />
-    <TimetableTile />
-    <TimetableTile />
-    <TimetableTile />
-    <TimetableTile />
+    <TimetableTile firstClass="1ti" firstClassName="1 Ti" secondClass="2ti" secondClassName="2 Ti" />
+    <TimetableTile firstClass="3ti" firstClassName="3 Ti" secondClass="4ti" secondClassName="4 Ti" />
+    <TimetableTile firstClass="1la" firstClassName="1 LA" secondClass="2la" secondClassName="2 LA" />
+    <TimetableTile firstClass="3la" firstClassName="3 LA" />
     <EmptyTile />
     <EmptyTile />
     <TwitchTile channel="esl_csgo" />
