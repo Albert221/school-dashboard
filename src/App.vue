@@ -1,16 +1,18 @@
 <template>
-  <div class="tile-container">
-    <TimeTile />
-    <WeatherTile :lat="54.717824" :lng="18.411052" />
-    <LuckyNumbersTile />
-    <FeedTile />
-    <TimetableTile />
-    <TimetableTile />
-    <TimetableTile />
-    <TimetableTile />
-    <EmptyTile />
-    <EmptyTile />
-    <TwitchTile channel="esl_csgo" />
+  <div>
+      <BackgroundTile :type="background.type" :src="background.src" />
+      <div class="tile-container">
+        <TimeTile />
+        <WeatherTile :lat="54.717824" :lng="18.411052" />
+        <LuckyNumbersTile />
+        <FeedTile />
+        <TimetableTile />
+        <TimetableTile />
+        <TimetableTile />
+        <TimetableTile />
+        <EmptyTile />
+        <EmptyTile />
+      </div>
   </div>
 </template>
 
@@ -21,10 +23,11 @@
   import FeedTile from './tiles/FeedTile.vue'
   import TimetableTile from './tiles/TimetableTile.vue'
   import EmptyTile from './tiles/EmptyTile.vue'
-  import TwitchTile from './tiles/TwitchTile.vue'
+  import BackgroundTile from './tiles/BackgroundTile.vue'
 
   export default {
     name: 'app',
+
     components: {
       TimeTile,
       WeatherTile,
@@ -32,7 +35,18 @@
       FeedTile,
       TimetableTile,
       EmptyTile,
-      TwitchTile
+      BackgroundTile,
+    },
+
+    data() {
+      return {
+        background: {
+          type: 'twitch',
+          src: 'esl_csgo'
+          // type: 'image',
+          // src: "http://wp.widewallpapers.net/4k/nature/autumn/3840x2160/autumn-3840x2160-009.jpg",
+        }
+      }
     }
   }
 </script>
