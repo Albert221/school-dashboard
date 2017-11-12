@@ -1,19 +1,19 @@
 <template>
-<div class="root">
-    <BackgroundTile :type="background.type" :src="background.src" />
-    <div class="tile-container">
-      <TimeTile />
-      <WeatherTile :lat="54.717824" :lng="18.411052" />
-      <LuckyNumbersTile />
-      <FeedTile />
-      <TimetableTile />
-      <TimetableTile />
-      <TimetableTile />
-      <TimetableTile />
-      <EmptyTile />
-      <EmptyTile />
-    </div>
-</div>
+  <div>
+      <BackgroundTile :type="background.type" :src="background.src" />
+      <div class="tile-container">
+        <TimeTile />
+        <WeatherTile :lat="54.717824" :lng="18.411052" />
+        <LuckyNumbersTile />
+        <FeedTile />
+        <TimetableTile />
+        <TimetableTile />
+        <TimetableTile />
+        <TimetableTile />
+        <EmptyTile />
+        <EmptyTile />
+      </div>
+  </div>
 </template>
 
 <script>
@@ -41,8 +41,10 @@
     data() {
       return {
         background: {
-          type: 'image',
-          src: "http://wp.widewallpapers.net/4k/nature/autumn/3840x2160/autumn-3840x2160-009.jpg",
+          type: 'twitch',
+          src: 'esl_csgo'
+          // type: 'image',
+          // src: "http://wp.widewallpapers.net/4k/nature/autumn/3840x2160/autumn-3840x2160-009.jpg",
         }
       }
     }
