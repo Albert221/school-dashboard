@@ -1,17 +1,19 @@
 <template>
-  <div class="tile-container">
-    <BackgroundTile type="image" src="https://hdwallsource.com/img/2014/6/mountain-peaks-wallpaper-hd-33593-34349-hd-wallpapers.jpg" />
-    <TimeTile />
-    <WeatherTile :lat="54.717824" :lng="18.411052" />
-    <LuckyNumbersTile />
-    <FeedTile />
-    <TimetableTile />
-    <TimetableTile />
-    <TimetableTile />
-    <TimetableTile />
-    <EmptyTile />
-    <EmptyTile />
-  </div>
+<div class="root">
+    <BackgroundTile :type="background.type" :src="background.src" />
+    <div class="tile-container">
+      <TimeTile />
+      <WeatherTile :lat="54.717824" :lng="18.411052" />
+      <LuckyNumbersTile />
+      <FeedTile />
+      <TimetableTile />
+      <TimetableTile />
+      <TimetableTile />
+      <TimetableTile />
+      <EmptyTile />
+      <EmptyTile />
+    </div>
+</div>
 </template>
 
 <script>
@@ -34,6 +36,15 @@
       TimetableTile,
       EmptyTile,
       BackgroundTile,
+    },
+
+    data() {
+      return {
+        background: {
+          type: 'image',
+          src: "http://wp.widewallpapers.net/4k/nature/autumn/3840x2160/autumn-3840x2160-009.jpg",
+        }
+      }
     }
   }
 </script>

@@ -1,7 +1,7 @@
 <template>
-    <div class="tile background">
-        <div v-if="type === 'twitch'" id="twitch"></div>
-        <img v-else-if="type === 'image'" id="image" :src="this.src"/>
+    <div class="background--content">
+        <div v-if="type === 'twitch'" id="twitch" class="background--content--twitch"></div>
+        <img v-else-if="type === 'image'" :src="src" class="background--content--image" />
     </div>
 </template>
 
@@ -19,13 +19,11 @@
         },
 
         mounted() {
-            if(this.type === "twitch")
-            {
+            if(this.type === 'twitch') {
                 new Twitch.Embed("twitch", {
                     channel: this.src,
                     layout: "video",
                     muted: true,
-                    width: 800,
                     controls: false,
                 });
             }
@@ -34,27 +32,25 @@
 </script>
 
 <style lang="scss">
-    .background {
-        position: fixed;
-        min-width: 100%;
-        min-height: 100%;
-        width: 100%;
-        height: 100%;
-        z-index: -100;
-    }
+    @import '../variables';
 
-    #twitch {
-        width: 100%;
-        height: 100%;
-    }
+    .background {        
+        &--content {
+            position: fixed;
+            z-index: -100;
 
-    #twitch iframe {
-        width: 100%;
-        height: 100%;
-    }
+            &--image {
+                width: 100%;
+                min-height: 500px;
+                width: 100vw;
+                height: 100vh;
+                object-fit: cover;
+            }
 
-    #image {
-        width: 100%;
-        height: 100%;
+            &--twitch iframe{
+                width: 100vw;
+                height: 100vh;
+            }
+        }
     }
 </style>
