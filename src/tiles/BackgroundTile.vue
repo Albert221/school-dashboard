@@ -25,7 +25,7 @@
                     layout: "video",
                     muted: true,
                     controls: false,
-                });
+                })
             }
         }
     }
