@@ -6,8 +6,8 @@
     <FeedTile />
     <TimetableTile firstClass="1ti" firstClassName="1 Ti" secondClass="2ti" secondClassName="2 Ti" />
     <TimetableTile firstClass="3ti" firstClassName="3 Ti" secondClass="4ti" secondClassName="4 Ti" />
-    <TimetableTile firstClass="1la" firstClassName="1 LA" secondClass="2la" secondClassName="2 LA" />
-    <TimetableTile firstClass="3la" firstClassName="3 LA" />
+    <TimetableTile firstClass="1lab" firstClassName="1 LA LAB" secondClass="1lah" secondClassName="1 LA H" />
+    <TimetableTile firstClass="2la" firstClassName="2 LA" secondClass="3la" secondClassName="3 LA" />
     <EmptyTile />
     <EmptyTile />
     <TwitchTile channel="esl_csgo" />

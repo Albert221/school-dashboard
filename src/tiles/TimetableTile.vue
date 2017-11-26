@@ -5,20 +5,20 @@
                 <tr>
                     <td class="timetable--classname" colspan="3">{{ firstClassName }}</td>
                 </tr>
-                <tr v-for="lesson in lessons.firstClass">
+                <tr v-for="lesson in visibleLessons.firstClass">
                     <td class="timetable--lesson">{{ lesson.lesson }}</td>
                     <td class="timetable--time">
-                        <time :datetime="lesson.time"></time>
+                        <time :datetime="lesson.time[0]"></time>
                     </td>
                     <td class="timetable--room">{{ lesson.room }}</td>
                 </tr>
                 <tr v-if="secondClass">
                     <td class="timetable--classname" colspan="3">{{ secondClassName }}</td>
                 </tr>
-                <tr v-for="lesson in lessons.secondClass">
+                <tr v-for="lesson in visibleLessons.secondClass">
                     <td class="timetable--lesson">{{ lesson.lesson }}</td>
                     <td class="timetable--time">
-                        <time :datetime="lesson.time"></time>
+                        <time :datetime="lesson.time[0]"></time>
                     </td>
                     <td class="timetable--room">{{ lesson.room }}</td>
                 </tr>
@@ -31,6 +31,7 @@
     import moment from 'moment'
     import { sprintf } from 'sprintf-js'
     import { API_URL } from '../constants'
+    import pickBy from 'lodash.pickby'
 
     export default {
         props: {
@@ -55,36 +56,80 @@
                 lessons: {
                     firstClass: {},
                     secondClass: {}
+                },
+                visibleLessons: {
+                    firstClass: {},
+                    secondClass: {}
                 }
             }
         },
 
         mounted() {
-            this.updateTimetables();
-            this.updateTimes();
+            this.updateTimetables()
+            this.updateVisibility()
+            this.updateTimes()
 
             setInterval(() => {
-                this.updateTimes();
-                this.updateVisibility();
-            }, 1000);
+                this.updateTimes()
+                this.updateVisibility()
+            }, 1000)
 
             setInterval(() => {
-                this.updateTimetables();
+                this.updateTimetables()
             }, 1000 * 60 * 60)
         },
 
         methods: {
             updateTimes() {
-                const times = document.querySelectorAll('.timetable--time time');
+                const times = document.querySelectorAll('.timetable--time time')
 
                 for (const time of times) {
-                    const timeValue = time.getAttribute('datetime');
+                    const timeValue = time.getAttribute('datetime')
                     time.innerText = moment(timeValue).locale('pl').fromNow()
                 }
             },
 
             updateVisibility() {
+                const now = moment()
 
+                function shouldStartPicking(lesson, key, length) {
+                    if (key == 1 && now.diff(lesson.time[0]) < 0)
+                        return true
+
+                    if (now.diff(lesson.time[0], 'minutes') <= 45)
+                        return true
+
+                    if (key == (length - 2))
+                        return true
+
+                    return false
+                }
+
+                function getVisible(lessons) {
+                    let startedPicking = false
+                    let leftToPick = 3
+
+                    return pickBy(lessons, (lesson, key) => {
+                        if (startedPicking) {
+                            if (leftToPick > 0) {
+                                leftToPick--
+
+                                return true
+                            }
+                        }
+                        else if (shouldStartPicking(lesson, key, Object.values(lessons).length)) {
+                            startedPicking = true
+                            leftToPick--
+
+                            return true
+                        }
+
+                        return false
+                    })
+                }
+
+                this.visibleLessons.firstClass = getVisible(this.lessons.firstClass)
+                this.visibleLessons.secondClass = getVisible(this.lessons.secondClass)
             },
 
             updateTimetables() {
@@ -100,28 +145,28 @@
                     [14*60+45, 15*60+30],
                     [15*60+35, 16*60+20],
                     [16*60+25, 17*60+10]
-                ].map(val => val.map(val => moment().hours(0).minutes(0).add(val, 'minutes')));
+                ].map(val => val.map(val => moment().hours(0).minutes(0).add(val, 'minutes')))
 
-                const url = `${API_URL}/timetable/%s`;
-                const dayOfWeek = moment().format('dddd').toLowerCase();
+                const url = `${API_URL}/timetable/%s`
+                const dayOfWeek = moment().format('dddd').toLowerCase()
 
                 fetch(sprintf(url, this.firstClass)).then((response) => {
                     response.json().then((data) => {
-                        this.lessons.firstClass = data[dayOfWeek];
+                        this.lessons.firstClass = data[dayOfWeek]
 
                         for (const key in this.lessons.firstClass) {
-                            this.lessons.firstClass[key].time = lessonTime[key - 1][0];
+                            this.lessons.firstClass[key].time = lessonTime[key - 1]
                         }
                     })
-                });
+                })
 
                 if (this.secondClass) {
                     fetch(sprintf(url, this.secondClass)).then((response) => {
                         response.json().then((data) => {
-                            this.lessons.secondClass = data[dayOfWeek];
+                            this.lessons.secondClass = data[dayOfWeek]
 
                             for (const key in this.lessons.secondClass) {
-                                this.lessons.secondClass[key].time = lessonTime[key - 1][0];
+                                this.lessons.secondClass[key].time = lessonTime[key - 1]
                             }
                         })
                     })
