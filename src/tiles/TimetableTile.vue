@@ -3,52 +3,24 @@
         <table class="timetable--table">
             <tbody>
                 <tr>
-                    <td class="timetable--classname" colspan="3">1 LAB</td>
+                    <td class="timetable--classname" colspan="3">{{ firstClassName }}</td>
                 </tr>
-                <tr>
-                    <td class="timetable--lesson">Język polski</td>
+                <tr v-for="lesson in visibleLessons.firstClass">
+                    <td class="timetable--lesson">{{ lesson.lesson }}</td>
                     <td class="timetable--time">
-                        <time datetime="2017-11-05T18:00:25+01:00"></time>
+                        <time :datetime="lesson.time[0]"></time>
                     </td>
-                    <td class="timetable--room">5</td>
+                    <td class="timetable--room">{{ lesson.room }}</td>
                 </tr>
-                <tr>
-                    <td class="timetable--lesson">Język polski</td>
+                <tr v-if="secondClass">
+                    <td class="timetable--classname" colspan="3">{{ secondClassName }}</td>
+                </tr>
+                <tr v-for="lesson in visibleLessons.secondClass">
+                    <td class="timetable--lesson">{{ lesson.lesson }}</td>
                     <td class="timetable--time">
-                        <time datetime="2017-11-05T18:40:25+01:00"></time>
+                        <time :datetime="lesson.time[0]"></time>
                     </td>
-                    <td class="timetable--room">3</td>
-                </tr>
-                <tr>
-                    <td class="timetable--lesson">Matematyka</td>
-                    <td class="timetable--time">
-                        <time datetime="2017-11-05T19:30:25+01:00"></time>
-                    </td>
-                    <td class="timetable--room">1</td>
-                </tr>
-                <tr>
-                    <td class="timetable--classname" colspan="3">1 LA H</td>
-                </tr>
-                <tr>
-                    <td class="timetable--lesson">Język angielski</td>
-                    <td class="timetable--time">
-                        <time datetime="2017-11-05T18:00:25+01:00"></time>
-                    </td>
-                    <td class="timetable--room">6</td>
-                </tr>
-                <tr>
-                    <td class="timetable--lesson">Matematyka</td>
-                    <td class="timetable--time">
-                        <time datetime="2017-11-05T18:40:25+01:00"></time>
-                    </td>
-                    <td class="timetable--room">1</td>
-                </tr>
-                <tr>
-                    <td class="timetable--lesson">Biologia</td>
-                    <td class="timetable--time">
-                        <time datetime="2017-11-05T19:30:25+01:00"></time>
-                    </td>
-                    <td class="timetable--room">2</td>
+                    <td class="timetable--room">{{ lesson.room }}</td>
                 </tr>
             </tbody>
         </table>
@@ -57,13 +29,54 @@
 
 <script>
     import moment from 'moment'
+    import { sprintf } from 'sprintf-js'
+    import { API_URL } from '../constants'
+    import pickBy from 'lodash.pickby'
 
     export default {
+        props: {
+            firstClass: {
+                type: String,
+                required: true
+            },
+            firstClassName: {
+                type: String,
+                required: true
+            },
+            secondClass: {
+                type: String
+            },
+            secondClassName: {
+                type: String
+            }
+        },
+
+        data() {
+            return {
+                lessons: {
+                    firstClass: {},
+                    secondClass: {}
+                },
+                visibleLessons: {
+                    firstClass: {},
+                    secondClass: {}
+                }
+            }
+        },
+
         mounted() {
+            this.updateTimetables()
+            this.updateVisibility()
             this.updateTimes()
+
             setInterval(() => {
                 this.updateTimes()
+                this.updateVisibility()
             }, 1000)
+
+            setInterval(() => {
+                this.updateTimetables()
+            }, 1000 * 60 * 60)
         },
 
         methods: {
@@ -73,6 +86,90 @@
                 for (const time of times) {
                     const timeValue = time.getAttribute('datetime')
                     time.innerText = moment(timeValue).locale('pl').fromNow()
+                }
+            },
+
+            updateVisibility() {
+                const now = moment()
+
+                function shouldStartPicking(lesson, key, length) {
+                    if (key == 1 && now.diff(lesson.time[0]) < 0)
+                        return true
+
+                    if (now.diff(lesson.time[0], 'minutes') <= 45)
+                        return true
+
+                    if (key == (length - 2))
+                        return true
+
+                    return false
+                }
+
+                function getVisible(lessons) {
+                    let startedPicking = false
+                    let leftToPick = 3
+
+                    return pickBy(lessons, (lesson, key) => {
+                        if (startedPicking) {
+                            if (leftToPick > 0) {
+                                leftToPick--
+
+                                return true
+                            }
+                        }
+                        else if (shouldStartPicking(lesson, key, Object.values(lessons).length)) {
+                            startedPicking = true
+                            leftToPick--
+
+                            return true
+                        }
+
+                        return false
+                    })
+                }
+
+                this.visibleLessons.firstClass = getVisible(this.lessons.firstClass)
+                this.visibleLessons.secondClass = getVisible(this.lessons.secondClass)
+            },
+
+            updateTimetables() {
+                const lessonTime = [
+                    [ 7*60+40,  8*60+25],
+                    [ 8*60+30,  9*60+15],
+                    [ 9*60+20, 10*60+ 5],
+                    [10*60+15, 11*60   ],
+                    [11*60+10, 11*60+55],
+                    [12*60+15, 13*60   ],
+                    [13*60+ 5, 13*60+50],
+                    [13*60+55, 14*60+40],
+                    [14*60+45, 15*60+30],
+                    [15*60+35, 16*60+20],
+                    [16*60+25, 17*60+10]
+                ].map(val => val.map(val => moment().hours(0).minutes(0).add(val, 'minutes')))
+
+                const url = `${API_URL}/timetable/%s`
+                const dayOfWeek = moment().format('dddd').toLowerCase()
+
+                fetch(sprintf(url, this.firstClass)).then((response) => {
+                    response.json().then((data) => {
+                        this.lessons.firstClass = data[dayOfWeek]
+
+                        for (const key in this.lessons.firstClass) {
+                            this.lessons.firstClass[key].time = lessonTime[key - 1]
+                        }
+                    })
+                })
+
+                if (this.secondClass) {
+                    fetch(sprintf(url, this.secondClass)).then((response) => {
+                        response.json().then((data) => {
+                            this.lessons.secondClass = data[dayOfWeek]
+
+                            for (const key in this.lessons.secondClass) {
+                                this.lessons.secondClass[key].time = lessonTime[key - 1]
+                            }
+                        })
+                    })
                 }
             }
         }
