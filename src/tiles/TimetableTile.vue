@@ -3,9 +3,9 @@
         <table class="timetable--table">
             <tbody>
                 <tr>
-                    <td class="timetable--classname" colspan="3">{{ firstClassName }}</td>
+                    <td class="timetable--classname" colspan="3">{{ firstClassData.name }}</td>
                 </tr>
-                <tr v-for="lesson in visibleLessons.firstClass">
+                <tr v-for="lesson in firstClassData.visibleLessons">
                     <td class="timetable--lesson">{{ lesson.lesson }}</td>
                     <td class="timetable--time">
                         <time :datetime="lesson.time[0]"></time>
@@ -13,9 +13,9 @@
                     <td class="timetable--room">{{ lesson.room }}</td>
                 </tr>
                 <tr v-if="secondClass">
-                    <td class="timetable--classname" colspan="3">{{ secondClassName }}</td>
+                    <td class="timetable--classname" colspan="3">{{ secondClassData.name }}</td>
                 </tr>
-                <tr v-for="lesson in visibleLessons.secondClass">
+                <tr v-for="lesson in secondClassData.visibleLessons">
                     <td class="timetable--lesson">{{ lesson.lesson }}</td>
                     <td class="timetable--time">
                         <time :datetime="lesson.time[0]"></time>
@@ -39,27 +39,22 @@
                 type: String,
                 required: true
             },
-            firstClassName: {
-                type: String,
-                required: true
-            },
             secondClass: {
-                type: String
-            },
-            secondClassName: {
                 type: String
             }
         },
 
         data() {
             return {
-                lessons: {
-                    firstClass: {},
-                    secondClass: {}
+                firstClassData: {
+                    name: '',
+                    lessons: {},
+                    visibleLessons: {}
                 },
-                visibleLessons: {
-                    firstClass: {},
-                    secondClass: {}
+                secondClassData: {
+                    name: '',
+                    lessons: {},
+                    visibleLessons: {}
                 }
             }
         },
@@ -85,7 +80,10 @@
 
                 for (const time of times) {
                     const timeValue = time.getAttribute('datetime')
-                    time.innerText = moment(timeValue).locale('pl').fromNow()
+
+                    if (timeValue != 0) {
+                        time.innerText = moment(timeValue).locale('pl').fromNow()
+                    }
                 }
             },
 
@@ -128,8 +126,8 @@
                     })
                 }
 
-                this.visibleLessons.firstClass = getVisible(this.lessons.firstClass)
-                this.visibleLessons.secondClass = getVisible(this.lessons.secondClass)
+                this.firstClassData.visibleLessons = getVisible(this.firstClassData.lessons)
+                this.secondClassData.visibleLessons = getVisible(this.secondClassData.lessons)
             },
 
             updateTimetables() {
@@ -148,14 +146,28 @@
                 ].map(val => val.map(val => moment().hours(0).minutes(0).add(val, 'minutes')))
 
                 const url = `${API_URL}/timetable/%s`
-                const dayOfWeek = moment().format('dddd').toLowerCase()
+                const dayOfWeek = parseInt(moment().format('d'))
+
 
                 fetch(sprintf(url, this.firstClass)).then((response) => {
                     response.json().then((data) => {
-                        this.lessons.firstClass = data[dayOfWeek]
+                        this.firstClassData.name = data['className']
 
-                        for (const key in this.lessons.firstClass) {
-                            this.lessons.firstClass[key].time = lessonTime[key - 1]
+                        if (data['timetable'][dayOfWeek] != null) {
+                            this.firstClassData.lessons = data['timetable'][dayOfWeek]
+
+                            for (const key in this.firstClassData.lessons) {
+                                this.firstClassData.lessons[key].time = lessonTime[key - 1]
+                            }
+                        }
+                        else {
+                            for (let key = 1; key <= 3; key++) {
+                                this.firstClassData.lessons[key] = {
+                                    lesson: '',
+                                    time: [0, 0],
+                                    room: ''
+                                }
+                            }
                         }
                     })
                 })
@@ -163,10 +175,23 @@
                 if (this.secondClass) {
                     fetch(sprintf(url, this.secondClass)).then((response) => {
                         response.json().then((data) => {
-                            this.lessons.secondClass = data[dayOfWeek]
+                            this.secondClassData.name = data['className']
 
-                            for (const key in this.lessons.secondClass) {
-                                this.lessons.secondClass[key].time = lessonTime[key - 1]
+                            if (data['timetable'][dayOfWeek] != null) {
+                                this.secondClassData.lessons = data['timetable'][dayOfWeek]
+
+                                for (const key in this.secondClassData.lessons) {
+                                    this.secondClassData.lessons[key].time = lessonTime[key - 1]
+                                }
+                            }
+                            else {
+                                for (let key = 1; key <= 3; key++) {
+                                    this.secondClassData.lessons[key] = {
+                                        lesson: '',
+                                        time: [0, 0],
+                                        room: ''
+                                    }
+                                }
                             }
                         })
                     })
