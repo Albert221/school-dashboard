@@ -15,20 +15,20 @@
 </template>
 
 <script>
-    import * as marquee from './../marquee'
+    import { Marquee } from './../marquee'
     import fetch from 'fetch-retry'
     import { API_URL } from '../constants'
 
     export default {
         data() {
             return {
-                feeds:[{
-                        "title": "",
-                        "content": "",
-                        "author": {
-                            "username": ""
+                feeds: [{
+                        title: '',
+                        content: '',
+                        author: {
+                            username: ''
                         },
-                        "publishedAt": ""
+                        publishedAt: ''
                     }
                 ]
             }
@@ -40,7 +40,8 @@
             setInterval(() => {
                 this.updateNews()
             }, 1000 * 60 * 5); // Update news every 5 minutes
-            marquee.Init('marquee','vmarquee');
+
+            { Marquee('marquee') };
         },
 
 
@@ -61,8 +62,8 @@
             },
 
             convertDate() {
-                for(var i=0;i<this.feeds.length;i++){
-                    this.feeds[i].publishedAt = new Date(1000*this.feeds[i].publishedAt);
+                for(var i = 0; i < this.feeds.length; i++){
+                    this.feeds[i].publishedAt = new Date(1000 * this.feeds[i].publishedAt);
                 }
             }
         }
@@ -81,17 +82,17 @@
         }
 
         &--marquee {
-            position:relative;
-            height:100%;
+            position: relative;
+            height: 100%;
             overflow: hidden;
         }
 
         &--scroll {
-            position:absolute;
+            position: absolute;
         }
 
         &--title {
-            font-size:1.1em;
+            font-size: 1.1em;
             text-align: center;
             font-weight: bolder;
         }
@@ -103,16 +104,16 @@
         }
 
         &--author {
-            text-align:right;
-            font-style:italic;
-            padding:0.5vw 1vw 0;
+            text-align: right;
+            font-style: italic;
+            padding: 0.5vw 1vw 0;
         }
 
         &--publishedAt {
-            font-size:16px;
-            text-align:right;
-            padding:0 1vw 2vw;
-            font-style:italic;
+            font-size: 16px;
+            text-align: right;
+            padding: 0 1vw 2vw;
+            font-style: italic;
         }
     }
 </style>
