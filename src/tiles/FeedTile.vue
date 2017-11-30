@@ -15,7 +15,7 @@
 </template>
 
 <script>
-    var marquee = require('../marquee')
+    import * as marquee from './../marquee'
     import fetch from 'fetch-retry'
     import { API_URL } from '../constants'
 
