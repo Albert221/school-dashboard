@@ -1,15 +1,73 @@
 <template>
   <article class="tile feed">
-        <h2 class="feed--title">Ogłoszenia</h2>
-        <div class="feed--content">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed dignissim, est quis molestie faucibus, ligula urna mollis dui, in gravida nibh libero id risus. Donec eget nibh eget sem suscipit sodales. Nam interdum velit dolor, eget placerat turpis tincidunt et. Fusce a augue nunc. Aenean volutpat ut risus eget vestibulum. In luctus odio in libero congue ullamcorper quis vitae enim. Duis tempor purus id tellus condimentum pretium. Aliquam in ligula aliquet, fermentum lectus sit amet, scelerisque felis. Curabitur at tempor velit.
-            Sed vestibulum suscipit efficitur. Quisque ac pretium urna, at ornare lorem. Proin metus felis, tristique a egestas et, aliquet at mauris. Morbi nec pellentesque ipsum. Nam consectetur justo id sollicitudin bibendum. Suspendisse potenti. Morbi mollis pharetra dolor, a lobortis sem. Nam quis varius neque. Proin imperdiet dignissim dui, a suscipit dui lobortis id. Integer iaculis id felis nec semper. Donec nisl magna, condimentum sed nisi in, dictum cursus ligula. Proin efficitur risus semper commodo sollicitudin. Phasellus ullamcorper mauris nec quam tempus sollicitudin.
+        <h2 class="feed--advert">Ogłoszenia</h2>
+        <div class="feed--marquee" id="marquee">
+            <div class="feed--scroll">
+                <div v-for="feed in feeds">
+                    <div class="feed--title">{{ feed.title }}</div>
+                    <div class="feed--content">{{ feed.content }}</div>
+                    <div class="feed--author">{{ feed.author.username }}</div>
+                    <div class="feed--publishedAt">{{ feed.publishedAt.toLocaleString() }}</div>
+                </div>
+            </div>
         </div>
     </article>
 </template>
 
 <script>
+    import moment from 'moment'
+    import marquee from './../marquee'
+    import fetch from 'fetch-retry'
+    import { API_URL } from '../constants'
+
     export default {
+        data() {
+            return {
+                feeds: [{
+                        title: '',
+                        content: '',
+                        author: {
+                            username: ''
+                        },
+                        publishedAt: ''
+                    }
+                ]
+            }
+        },
+
+        mounted() {
+            this.updateNews()
+
+            setInterval(() => {
+                this.updateNews()
+            }, 1000 * 60 * 5); // Update news every 5 minutes
+
+            marquee('marquee');
+        },
+
+
+        methods: {
+            updateNews() {
+                const url = `${API_URL}/newsfeed/5`
+
+                fetch(url, {
+                    retries: Number.MAX_SAFE_INTEGER,
+                    retryDelay: 1 * 60 * 1000
+                }).then((response) => {
+                    response.json().then((data) => {
+                        this.feeds = data.news;
+                        
+                        this.convertDate();
+                    })
+                })
+            },
+
+            convertDate() {
+                for(var i = 0; i < this.feeds.length; i++) {
+                    this.feeds[i].publishedAt = moment.unix(this.feeds[i].publishedAt).locale('pl').format('LLLL');
+                }
+            }
+        }
     }
 </script>
 
@@ -20,14 +78,43 @@
         flex-direction: column;
         padding: 1vw 1vw 0;
 
-        &--title {
+        &--advert {
             margin-top: 0;
+        }
+
+        &--marquee {
+            position: relative;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        &--scroll {
+            position: absolute;
+        }
+
+        &--title {
+            font-size: 1.1em;
+            text-align: center;
+            font-weight: bolder;
         }
 
         &--content {
             flex: 1;
             white-space: pre-line;
-            overflow: hidden;
+            text-align: center;
+        }
+
+        &--author {
+            text-align: right;
+            font-style: italic;
+            padding: 0.5vw 1vw 0;
+        }
+
+        &--publishedAt {
+            font-size: 16px;
+            text-align: right;
+            padding: 0 1vw 2vw;
+            font-style: italic;
         }
     }
 </style>
