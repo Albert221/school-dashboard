@@ -2,7 +2,7 @@
   <article class="tile feed">
         <h2 class="feed--advert">Ogłoszenia</h2>
         <div class="feed--marquee" id="marquee">
-            <div class="feed--scroll" id="vmarquee">
+            <div class="feed--scroll">
                 <div v-for="feed in feeds">
                     <div class="feed--title">{{ feed.title }}</div>
                     <div class="feed--content">{{ feed.content }}</div>

@@ -2,8 +2,8 @@ const marqueeSpeed = 1
 let actualHeight = 0
 
 export default function marquee(containerId) {
-	var crossMarquee = document.getElementById(containerId).firstElementChild
-	var marqueeheight = document.getElementById(containerId).offsetHeight
+	let crossMarquee = document.getElementById(containerId).firstElementChild
+	let marqueeheight = document.getElementById(containerId).offsetHeight
 	actualHeight = crossMarquee.offsetHeight
 	
 	setInterval(function() {
