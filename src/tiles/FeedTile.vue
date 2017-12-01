@@ -15,7 +15,8 @@
 </template>
 
 <script>
-    import { Marquee } from './../marquee'
+    import moment from 'moment'
+    import marquee from './../marquee'
     import fetch from 'fetch-retry'
     import { API_URL } from '../constants'
 
@@ -41,7 +42,7 @@
                 this.updateNews()
             }, 1000 * 60 * 5); // Update news every 5 minutes
 
-            { Marquee('marquee') };
+            marquee('marquee');
         },
 
 
@@ -62,8 +63,8 @@
             },
 
             convertDate() {
-                for(var i = 0; i < this.feeds.length; i++){
-                    this.feeds[i].publishedAt = new Date(1000 * this.feeds[i].publishedAt);
+                for(var i = 0; i < this.feeds.length; i++) {
+                    this.feeds[i].publishedAt = moment.unix(this.feeds[i].publishedAt).locale('pl').format('LLLL');
                 }
             }
         }
