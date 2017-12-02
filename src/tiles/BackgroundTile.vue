@@ -4,16 +4,19 @@
 </template>
 
 <script>
+    import { BACKGROUND_TYPE, BACKGROUND_SRC } from '../constants'
+
     export default {
-        props: {
-            type: {
-                type: String,
-                required: true,
-            },
-            src: {
-                type: String,
-                required: true,
+        data() {
+            return {
+                type: '',
+                src: ''
             }
+        },
+
+        created() {
+            this.type = BACKGROUND_TYPE
+            this.src = BACKGROUND_SRC
         },
 
         mounted() {

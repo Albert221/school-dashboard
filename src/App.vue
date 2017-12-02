@@ -1,6 +1,6 @@
 <template>
   <div>
-      <BackgroundTile :type="background.type" :src="background.src" />
+      <BackgroundTile />
       <div class="tile-container">
         <TimeTile />
         <WeatherTile :lat="54.717824" :lng="18.411052" />
@@ -36,17 +36,6 @@
       TimetableTile,
       EmptyTile,
       BackgroundTile,
-    },
-
-    data() {
-      return {
-        background: {
-          type: 'twitch',
-          src: 'esl_csgo'
-          // type: 'image',
-          // src: "http://wp.widewallpapers.net/4k/nature/autumn/3840x2160/autumn-3840x2160-009.jpg",
-        }
-      }
     }
   }
 </script>
