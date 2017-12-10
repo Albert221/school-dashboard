@@ -28,7 +28,7 @@ fetch(url).then(function(response) {
             if (error || data !== sha) {
                 console.log('error or outdated')
 
-                runCommand('pkill chrome')
+                runCommand('pkill chromium-browse')
 
                 runCommand('cp ../../src/constants.js /tmp/dashboard-backup.js')
 
@@ -40,7 +40,7 @@ fetch(url).then(function(response) {
                 runCommand('npm install')
                 runCommand('npm run build')
 
-                child_process.spawn('google-chrome', params, { cwd: __dirname, detached: true, stdio: 'ignore', env: { DISPLAY: ':0' } })
+                child_process.spawn('chromium-browser', params, { cwd: __dirname, detached: true, stdio: 'ignore', env: { DISPLAY: ':0' } })
                     .unref()
 
                 fs.writeFile(__dirname + '/lastver.txt', sha, 'utf8', function (error) {
