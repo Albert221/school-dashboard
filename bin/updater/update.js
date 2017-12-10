@@ -11,9 +11,9 @@ var params = [
     '--disable-infobars'
 ]
 
-function runCommand(command, cwd) {
+function runCommand(command) {
     try {
-        child_process.execSync(command)
+        child_process.execSync(command, { cwd: __dirname })
     }
     catch (exception) {
 
@@ -24,7 +24,7 @@ fetch(url).then(function(response) {
     response.json().then(function(data) {
         var sha = data[0]['sha']
 
-        fs.readFile('./lastver.txt', 'utf8', function (error, data) {
+        fs.readFile(__dirname + '/lastver.txt', 'utf8', function (error, data) {
             if (error || data !== sha) {
                 console.log('error or outdated')
 
@@ -40,10 +40,10 @@ fetch(url).then(function(response) {
                 runCommand('npm install')
                 runCommand('npm run build')
 
-                child_process.spawn('google-chrome', params, { detached: true, stdio: 'ignore', env: { DISPLAY: ':0' } })
+                child_process.spawn('google-chrome', params, { cwd: __dirname, detached: true, stdio: 'ignore', env: { DISPLAY: ':0' } })
                     .unref()
 
-                fs.writeFile('./lastver.txt', sha, 'utf8', function (error) {
+                fs.writeFile(__dirname + '/lastver.txt', sha, 'utf8', function (error) {
                     if (error) {
                         console.log(error)
                     }
