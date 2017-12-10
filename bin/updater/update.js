@@ -20,6 +20,11 @@ function runCommand(command) {
     }
 }
 
+function runBrowser() {
+    child_process.spawn('chromium-browser', params, { cwd: __dirname, detached: true, stdio: 'ignore', env: { DISPLAY: ':0' } })
+        .unref()
+}
+
 fetch(url).then(function(response) {
     response.json().then(function(data) {
         var sha = data[0]['sha']
@@ -40,8 +45,7 @@ fetch(url).then(function(response) {
                 runCommand('npm install')
                 runCommand('npm run build')
 
-                child_process.spawn('chromium-browser', params, { cwd: __dirname, detached: true, stdio: 'ignore', env: { DISPLAY: ':0' } })
-                    .unref()
+                runBrowser()
 
                 fs.writeFile(__dirname + '/lastver.txt', sha, 'utf8', function (error) {
                     if (error) {
@@ -51,6 +55,10 @@ fetch(url).then(function(response) {
             }
             else {
                 console.log('all is good')
+
+                if (process.argv[2] && process.argv[2] === 'start') {
+                    runBrowser()
+                }
             }
         })
     })
