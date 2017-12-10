@@ -1,4 +1,4 @@
-!#/usr/bin/env node
+#!/usr/bin/env node
 var fs = require('fs')
 var fetch = require('node-fetch')
 var child_process = require('child_process')
@@ -36,12 +36,12 @@ fetch(url).then(function(response) {
 
                 runCommand('pkill chromium-browse')
 
-                runCommand('cp ../../src/constants.js /tmp/dashboard-backup.js')
+                runCommand('cp ../src/constants.js /tmp/dashboard-backup.js')
 
                 runCommand('git fetch --all')
                 runCommand('git reset --hard origin/master')
 
-                runCommand('mv /tmp/dashboard-backup.js ../../src/constants.js')
+                runCommand('mv /tmp/dashboard-backup.js ../src/constants.js')
 
                 runCommand('npm install')
                 runCommand('npm run build')
