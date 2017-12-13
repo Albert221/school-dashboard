@@ -5,7 +5,7 @@
             <div class="feed--scroll">
                 <div v-for="feed in feeds">
                     <div class="feed--title">{{ feed.title }}</div>
-                    <div class="feed--content">{{ feed.content }}</div>
+                    <div class="feed--content" v-html="feed.content"></div>
                     <div class="feed--author">{{ feed.author.username }}</div>
                     <div class="feed--publishedAt">{{ feed.publishedAt.toLocaleString() }}</div>
                 </div>
