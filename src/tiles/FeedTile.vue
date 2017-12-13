@@ -5,9 +5,9 @@
             <div class="feed--scroll">
                 <div v-for="feed in feeds">
                     <div class="feed--title">{{ feed.title }}</div>
+                    <div class="feed--published-at">{{ feed.publishedAt.calendar() }}</div>
                     <div class="feed--content" v-html="feed.content"></div>
                     <div class="feed--author">{{ feed.author.username }}</div>
-                    <div class="feed--publishedAt">{{ feed.publishedAt.toLocaleString() }}</div>
                 </div>
             </div>
         </div>
@@ -29,7 +29,7 @@
                         author: {
                             username: ''
                         },
-                        publishedAt: ''
+                        publishedAt: moment()
                     }
                 ]
             }
@@ -42,7 +42,7 @@
                 this.updateNews()
             }, 1000 * 60 * 5); // Update news every 5 minutes
 
-            marquee('marquee');
+            marquee('marquee')
         },
 
 
@@ -55,17 +55,18 @@
                     retryDelay: 1 * 60 * 1000
                 }).then((response) => {
                     response.json().then((data) => {
-                        this.feeds = data.news;
+                        this.feeds = data.news
                         
-                        this.convertDate();
+                        this.convertDate()
                     })
                 })
             },
 
             convertDate() {
-                for(var i = 0; i < this.feeds.length; i++) {
-                    this.feeds[i].publishedAt = moment.unix(this.feeds[i].publishedAt).locale('pl').format('LLLL');
-                }
+                this.feeds.map((feed) => {
+                    feed.publishedAt = moment.unix(feed.publishedAt).locale('pl')
+                    return feed
+                })
             }
         }
     }
@@ -90,30 +91,26 @@
 
         &--scroll {
             position: absolute;
+            width: 100%;
         }
 
         &--title {
             font-size: 1.1em;
-            text-align: center;
             font-weight: bolder;
+        }
+
+        &--published-at {
+            color: #aaa;
+            font-size: 90%;
         }
 
         &--content {
             flex: 1;
             white-space: pre-line;
-            text-align: center;
         }
 
         &--author {
             text-align: right;
-            font-style: italic;
-            padding: 0.5vw 1vw 0;
-        }
-
-        &--publishedAt {
-            font-size: 16px;
-            text-align: right;
-            padding: 0 1vw 2vw;
             font-style: italic;
         }
     }
