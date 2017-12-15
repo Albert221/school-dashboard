@@ -9,7 +9,8 @@ var params = [
     '../index.html',
     '--kiosk',
     '--incognito',
-    '--disable-infobars'
+    '--disable-infobars',
+    '--no-first-run'
 ]
 
 function runCommand(command) {
