@@ -8,7 +8,6 @@ var url = 'https://api.github.com/repos/PozytywneInicjatywy/dashboard-front/comm
 var params = [
     '../index.html',
     '--kiosk',
-    '--incognito',
     '--disable-infobars',
     '--no-first-run'
 ]
