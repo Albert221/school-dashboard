@@ -10,8 +10,6 @@
         <TimetableTile firstClass="3ti" secondClass="4ti" />
         <TimetableTile firstClass="1lab" secondClass="1lah" />
         <TimetableTile firstClass="2la" secondClass="3la" />
-        <EmptyTile />
-        <EmptyTile />
       </div>
   </div>
 </template>
