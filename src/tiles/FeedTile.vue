@@ -1,9 +1,9 @@
 <template>
   <article class="tile feed">
         <h2 class="feed--advert">Ogłoszenia</h2>
-        <div class="feed--marquee" id="marquee">
-            <div class="feed--scroll">
-                <div v-for="feed in feeds">
+        <div class="feed--marquee-container">
+            <div class="feed--marquee">
+                <div class="feed--scroll" v-for="feed in feeds">
                     <div class="feed--title">{{ feed.title }}</div>
                     <div class="feed--published-at">{{ feed.publishedAt.calendar() }}</div>
                     <div class="feed--content" v-html="feed.content"></div>
@@ -16,7 +16,7 @@
 
 <script>
     import moment from 'moment'
-    import marquee from './../marquee'
+    import Marquee from './../marquee'
     import fetch from 'fetch-retry'
     import { API_URL } from '../constants'
 
@@ -36,13 +36,12 @@
         },
 
         mounted() {
-            this.updateNews()
+            this.marquee = new Marquee('.feed--marquee-container')
 
+            this.updateNews()
             setInterval(() => {
                 this.updateNews()
-            }, 1000 * 60 * 5); // Update news every 5 minutes
-
-            marquee('marquee')
+            }, 1000 * 60 * 1); // Update news every minute
         },
 
 
@@ -52,12 +51,13 @@
 
                 fetch(url, {
                     retries: Number.MAX_SAFE_INTEGER,
-                    retryDelay: 1 * 60 * 1000
+                    retryDelay: 1000 * 60 * 1
                 }).then((response) => {
                     response.json().then((data) => {
                         this.feeds = data.news
                         
                         this.convertDate()
+                        setTimeout(() => this.marquee.update(), 1000)
                     })
                 })
             },
@@ -83,15 +83,18 @@
             margin-top: 0;
         }
 
-        &--marquee {
+        &--marquee-container {
             position: relative;
             height: 100%;
             overflow: hidden;
         }
 
+        &--marquee {
+            //
+        }
+
         &--scroll {
-            position: absolute;
-            width: 100%;
+            //
         }
 
         &--title {
@@ -110,6 +113,7 @@
         }
 
         &--author {
+            margin-right: 3px;
             text-align: right;
             font-style: italic;
         }
