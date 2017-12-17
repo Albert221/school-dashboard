@@ -97,7 +97,7 @@
                     if (now.diff(lesson.time[0], 'minutes') <= 45)
                         return true
 
-                    if (key == (keyValues.highest - 2))
+                    if (key == keyValues.highest - 2)
                         return true
 
                     return false
