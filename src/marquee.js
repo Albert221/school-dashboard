@@ -2,7 +2,7 @@ const marqueeSpeed = 1
 let actualHeight = 0
 
 export default class Marquee {
-	constructor(selector, duration = 10 * 1000) {
+	constructor(selector, duration = 30 * 1000) {
 		this.selector = selector
 		this.duration = duration
 	}
@@ -16,15 +16,19 @@ export default class Marquee {
 		this.animation = child.animate([
 			{
 				transform: 'translateY(0)',
-				offset: 0
+				offset: 0.05
 			},
 			{
 				transform: `translateY(-${offset}px)`,
-				offset: 0.9
+				offset: 0.45
+			},
+			{
+				transform: `translateY(-${offset}px)`,
+				offset: 0.55
 			},
 			{
 				transform: 'translateY(0)',
-				offset: 1
+				offset: 0.95
 			}
 		], {
 			duration: this.duration,
