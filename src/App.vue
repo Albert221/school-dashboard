@@ -11,29 +11,32 @@
         <TimetableTile firstClass="1lab" secondClass="1lah" />
         <TimetableTile firstClass="2la" secondClass="3la" />
       </div>
+      <CreditsTile />
   </div>
 </template>
 
 <script>
+  import BackgroundTile from './tiles/BackgroundTile.vue'
   import TimeTile from './tiles/TimeTile.vue'
   import WeatherTile from './tiles/WeatherTile.vue'
   import LuckyNumbersTile from './tiles/LuckyNumbersTile.vue'
   import FeedTile from './tiles/FeedTile.vue'
   import TimetableTile from './tiles/TimetableTile.vue'
   import EmptyTile from './tiles/EmptyTile.vue'
-  import BackgroundTile from './tiles/BackgroundTile.vue'
+  import CreditsTile from './tiles/CreditsTile.vue'
 
   export default {
     name: 'app',
 
     components: {
+      BackgroundTile,
       TimeTile,
       WeatherTile,
       LuckyNumbersTile,
       FeedTile,
       TimetableTile,
       EmptyTile,
-      BackgroundTile,
+      CreditsTile
     }
   }
 </script>
