@@ -1,6 +1,6 @@
 <template>
     <footer class="credits">
-        Uptime: {{ mountedAt.fromNow(true) }} &bull;
+        Uptime: {{ uptime }} &bull;
         Stworzone przez: Alberta Wolszon, Jakuba Bizewskiego i Łukasza Ciskowskiego
     </footer>
 </template>
@@ -11,8 +11,16 @@
     export default {
         data() {
             return {
-                mountedAt: moment().locale('pl')
+                mountedAt: moment().locale('pl'),
+                uptime: ''
             }
+        },
+        
+        mounted() {
+            // FIXME: do it without using setInterval
+            setInterval(() => {
+                this.uptime = this.mountedAt.fromNow(true)
+            }, 1000)
         }
     }
 </script>
