@@ -90,20 +90,27 @@
             updateVisibility() {
                 const now = moment()
 
-                function shouldStartPicking(lesson, key, length) {
-                    if (key == 1 && now.diff(lesson.time[0]) < 0)
+                function shouldStartPicking(lesson, key, keyValues) {
+                    if (key == keyValues.lowest && now.diff(lesson.time[0]) < 0)
                         return true
 
                     if (now.diff(lesson.time[0], 'minutes') <= 45)
                         return true
 
-                    if (key == (length - 2))
+                    if (key == (keyValues.highest - 2))
                         return true
 
                     return false
                 }
 
                 function getVisible(lessons) {
+                    const keys = Object.keys(lessons).map((number) => parseInt(number))
+
+                    const keyValues = {
+                        lowest: Math.min(...keys),
+                        highest: Math.max(...keys)
+                    }
+                    
                     let startedPicking = false
                     let leftToPick = 3
 
@@ -115,7 +122,7 @@
                                 return true
                             }
                         }
-                        else if (shouldStartPicking(lesson, key, Object.values(lessons).length)) {
+                        else if (shouldStartPicking(lesson, key, keyValues)) {
                             startedPicking = true
                             leftToPick--
 
@@ -147,7 +154,6 @@
 
                 const url = `${API_URL}/timetable/%s`
                 const dayOfWeek = parseInt(moment().format('d'))
-
 
                 fetch(sprintf(url, this.firstClass)).then((response) => {
                     response.json().then((data) => {
