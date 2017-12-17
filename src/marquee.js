@@ -1,18 +1,36 @@
 const marqueeSpeed = 1
 let actualHeight = 0
 
-export default function marquee(containerId) {
-	let crossMarquee = document.getElementById(containerId).firstElementChild
-	let marqueeheight = document.getElementById(containerId).offsetHeight
-	actualHeight = crossMarquee.offsetHeight
-	
-	setInterval(function() {
-		crossMarquee = document.getElementById(containerId).firstElementChild
-		actualHeight = crossMarquee.offsetHeight
+export default class Marquee {
+	constructor(selector, duration = 10 * 1000) {
+		this.selector = selector
+		this.duration = duration
+	}
 
-		if (parseInt(crossMarquee.style.top) > (actualHeight * -1 + 8)) 
-			crossMarquee.style.top = `${parseInt(crossMarquee.style.top) - marqueeSpeed}px`
-		else 
-			crossMarquee.style.top = `${parseInt(marqueeheight) + 8}px`
-	}, 1000 / 30)
+	update() {
+		const container = document.querySelector(this.selector)
+		const child = container.firstElementChild
+		let offset = child.clientHeight - container.clientHeight
+		offset = offset > 0 ? offset : 0
+		
+		this.animation = child.animate([
+			{
+				transform: 'translateY(0)',
+				offset: 0
+			},
+			{
+				transform: `translateY(-${offset}px)`,
+				offset: 0.9
+			},
+			{
+				transform: 'translateY(0)',
+				offset: 1
+			}
+		], {
+			duration: this.duration,
+			iterations: Infinity
+		})
+
+		this.animation.play()
+	}
 }
