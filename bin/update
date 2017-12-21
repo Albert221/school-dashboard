@@ -9,7 +9,9 @@ var params = [
     '../index.html',
     '--kiosk',
     '--disable-infobars',
-    '--no-first-run'
+    '--no-first-run',
+    '--javascript-harmony',
+    '--enable-experimental-web-platform-features'
 ]
 
 function runCommand(command) {
