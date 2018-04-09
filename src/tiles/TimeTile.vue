@@ -1,7 +1,7 @@
 <template>
     <article class="tile time">
         <h2 class="time--current">{{ currentTime.format('H:mm') }}</h2>
-        <ul class="time--schedule">
+        <ul :class="'time--schedule time--schedule__' + currentPeriodClass">
             <li class="time--schedule-progress-item">
                 <progress class="time--progress" :value="progress" max="100"></progress>
             </li>
@@ -22,6 +22,7 @@
                 progress: 0,
                 previousTime: moment(),
                 currentPeriod: 'Przerwa',
+                currentPeriodClass: 'break',
                 nextTime: moment()
             }
         },
@@ -60,6 +61,7 @@
                     if (now < from && i == 0) {
                         this.previousTime = lessons[lessons.length - 1][1]
                         this.currentPeriod = 'Przed lekcjami'
+                        this.currentPeriodClass = 'break'
                         this.nextTime = from
 
                         this.updateProgress(this.previousTime, this.nextTime, this.currentTime)
@@ -68,6 +70,7 @@
                     } else if (from <= now && now < to) {
                         this.previousTime = from
                         this.currentPeriod = `Lekcja ${i + 1}.`
+                        this.currentPeriodClass = 'lesson'
                         this.nextTime = to
 
                         this.updateProgress(this.previousTime, this.nextTime, this.currentTime)
@@ -76,6 +79,7 @@
                     } else if (to < now && i == lessons.length - 1) {
                         this.previousTime = to
                         this.currentPeriod = 'Po lekcjach'
+                        this.currentPeriodClass = 'break'
                         this.nextTime = lessons[0][0]
 
                         this.updateProgress(this.previousTime, this.nextTime, this.currentTime)
@@ -89,6 +93,7 @@
                         if (to < now) {
                             this.previousTime = to
                             this.currentPeriod = 'Przerwa'
+                            this.currentPeriodClass = 'break'
                             this.nextTime = lessons[i + 1][0]
 
                             this.updateProgress(this.previousTime, this.nextTime, this.currentTime)
@@ -145,6 +150,14 @@
             background: $primaryTransColor;
 
             list-style: none;
+
+            &__break {
+                background: $breakTransColor;
+            }
+
+            &__lesson {
+                background: $lessonTransColor;
+            }
         }
 
         &--schedule-progress-item {
