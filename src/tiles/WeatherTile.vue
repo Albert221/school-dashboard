@@ -83,7 +83,7 @@
                 fetch(sprintf(url, 'weather')).then((response) => {
                     response.json().then((data) => {
                         this.current = {
-                            temperature: data.main.temp,
+                            temperature: Math.round(data.main.temp),
                             weatherIcon: data.weather[0].icon
                         }
                     })
